@@ -7,8 +7,6 @@
     "node": "8.12.0"
   },
   "dependencies": {
-    "@devexpress/dx-react-core": "^1.10.0",
-    "@devexpress/dx-react-grid": "^1.10.0",
     "axios": "^0.18.0",
     "devextreme": "^18.2.5",
     "devextreme-react": "^18.2.5",

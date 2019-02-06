@@ -11,9 +11,10 @@ class App extends Component {
       <MuiThemeProvider>
         <Router>
           <Switch>
-            <Route exact={true} path="/login" component={Login} />
+            <Route exact={true} path="/" component={Login} />
             <Route exact={true} path="/food-grid" component={FoodGrid} />
             <Route path="/food-detail" component={FoodDetail} />
+            <Route exact={true} path="/login" component={Login} />
           </Switch>
         </Router>
       </MuiThemeProvider>

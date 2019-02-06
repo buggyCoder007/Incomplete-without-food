@@ -19,14 +19,22 @@ export default class FoodDetail extends Component {
     };
   }
   handleClick() {
-    this.props.history.push("/food-grid");
+    let username =
+      this.props && this.props.location && this.props.location.pathname
+        ? this.props.location.pathname.split("/")
+        : null;
+    username = username && username.length > 0 ? username[2] : null;
+    this.props.history.push({
+      pathname: "/food-grid",
+      state: { userDetail: username }
+    });
   }
 
   componentDidMount() {
     let foodObj = {};
     let foodName = this.props.location.pathname.split("/");
-    foodName = foodName[2];
-    let url = `https://api.edamam.com/search?q=spinach&app_id=${app_id}&app_key=${apiKey}&from=0&to=9&calories=591-722&health=alcohol-free`;
+    foodName = foodName[3];
+    let url = `https://api.edamam.com/search?q=spinach&app_id=${app_id}&app_key=${apiKey}&from=0&to=2&calories=591-722&health=alcohol-free`;
     axios
       .get(url)
       .then(resp => {
@@ -54,10 +62,11 @@ export default class FoodDetail extends Component {
         <Card
           style={{
             paddingBottom: "8px",
-            marginTop: "130px",
-            background: "whitesmoke"
+            marginTop: "56px",
+            background: "linear-gradient(145deg ,#e31837 15%,white 100%)"
           }}
         >
+          <CardText>Food Description</CardText>
           <CardMedia
             style={style}
             overlay={

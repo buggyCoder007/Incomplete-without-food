@@ -4,18 +4,21 @@ import DataGrid, {
   Column,
   Grouping,
   Editing,
-  Paging,
-  SearchPanel
+  Paging
 } from "devextreme-react/data-grid";
 import { Card, CardText } from "material-ui/Card";
 import $ from "jquery";
 import { RaisedButton } from "material-ui";
+import background from "./assets/grid-background.jpg";
 const apiKey = "49edad12be6386085bf6e30bcc25f715";
 const app_id = "5e084bfe";
+let userDetail = null;
+
 const cellRender = image => <img src={image.value} />;
+
 const cellTemplate = (container, options) => {
   $("<a>" + options.value + "</a>")
-    .attr("href", "/food-detail/" + options.value)
+    .attr("href", `/food-detail/${userDetail}/` + options.value)
     .attr("target", "_Self")
     .appendTo(container);
 };
@@ -24,27 +27,19 @@ class FoodGrid extends Component {
     super(props);
     this.state = {
       data: [],
-      events: []
+      userDetail: null
     };
-    this.logEvent = this.logEvent.bind(this);
-    this.onEditingStart = this.logEvent.bind(this, "EditingStart");
-    this.onInitNewRow = this.logEvent.bind(this, "InitNewRow");
-    this.onRowInserting = this.logEvent.bind(this, "RowInserting");
-    this.onRowInserted = this.logEvent.bind(this, "RowInserted");
-    this.onRowUpdating = this.logEvent.bind(this, "RowUpdating");
-    this.onRowUpdated = this.logEvent.bind(this, "RowUpdated");
-    this.onRowRemoving = this.logEvent.bind(this, "RowRemoving");
-    this.onRowRemoved = this.logEvent.bind(this, "RowRemoved");
-    this.clearEvents = this.clearEvents.bind(this);
-  }
-  logEvent(eventName) {
-    this.setState(state => {
-      return { events: [eventName].concat(state.events) };
-    });
+    this.onRowInserted = this.onRowInserted.bind(this, "RowInserting");
   }
 
-  clearEvents() {
-    this.setState({ events: [] });
+  onRowInserted(e) {
+    localStorage.setItem("data", JSON.stringify(this.state.data));
+  }
+  onRowRemoved(e) {
+    localStorage.setItem("data", JSON.stringify(this.state.data));
+  }
+  onRowUpdated(e) {
+    localStorage.setItem("data", JSON.stringify(this.state.data));
   }
 
   onToolbarPreparing(e) {
@@ -75,8 +70,16 @@ class FoodGrid extends Component {
   }
 
   componentDidMount() {
+    const cachedHits = localStorage.getItem("data");
     let finalArr = [];
-    let url = `https://api.edamam.com/search?q=spinach&app_id=${app_id}&app_key=${apiKey}&from=0&to=9&calories=591-722&health=alcohol-free`;
+    userDetail =
+      this.props &&
+      this.props.location &&
+      this.props.location.state &&
+      this.props.location.state.userDetail
+        ? this.props.location.state.userDetail
+        : null;
+    let url = `https://api.edamam.com/search?q=spinach&app_id=${app_id}&app_key=${apiKey}&from=0&to=2&calories=591-722&health=alcohol-free`;
     axios
       .get(url)
       .then(resp => {
@@ -85,11 +88,10 @@ class FoodGrid extends Component {
           let food = resp.data.hits[i];
           foodObj["Reciepe"] = food.recipe.label;
           foodObj["Image"] = food.recipe.image;
-          foodObj["Calories"] = food.recipe.calories;
           finalArr.push(foodObj);
         }
         this.setState({
-          data: finalArr
+          data: cachedHits ? JSON.parse(cachedHits) : finalArr
         });
       })
       .catch(err => {
@@ -100,20 +102,23 @@ class FoodGrid extends Component {
     return (
       <div>
         <Card
+          className="foodGrid"
           style={{
             fontSize: "14px",
             color: "rgba(0, 0, 0, 0.87)",
             fontFamily: "cursive",
-            backgroundBlendMode: "soft-light",
-            backgroundColor: "antiquewhite"
+            paddingBottom: "6.6%",
+            background: "linear-gradient(145deg ,#e31837 15%,white 100%)"
           }}
         >
           <CardText>Food Store</CardText>
           <RaisedButton
             label="LOGOUT"
             style={{
-              marginLeft: "92%",
-              marginTop: "16px"
+              marginLeft: "89%",
+              marginTop: "-17px",
+              marginBottom: "17px",
+              marginRight: "30px"
             }}
             primary={true}
             onClick={this.handleClick.bind(this)}
@@ -124,17 +129,11 @@ class FoodGrid extends Component {
               dataSource={this.state.data}
               allowColumnReordering={true}
               showBorders={true}
-              onEditingStart={this.onEditingStart}
-              onInitNewRow={this.onInitNewRow}
-              onRowInserting={this.onRowInserting}
               onRowInserted={this.onRowInserted}
-              onRowUpdating={this.onRowUpdating}
-              onRowUpdated={this.onRowUpdated}
-              onRowRemoving={this.onRowRemoving}
-              onRowRemoved={this.onRowRemoved}
+              onRowUpdated={this.onRowUpdated.bind(this)}
+              onRowRemoved={this.onRowRemoved.bind(this)}
               onToolbarPreparing={this.onToolbarPreparing.bind(this)}
             >
-              <SearchPanel visible={true} />
               <Editing
                 mode={"row"}
                 allowUpdating={
@@ -159,7 +158,6 @@ class FoodGrid extends Component {
               <Grouping autoExpandAll={false} />
               <Column dataField="Reciepe" cellTemplate={cellTemplate} />
               <Column dataField="Image" cellRender={cellRender} />
-              <Column dataField="Calories" />
               <Paging defaultPageSize={10} />
             </DataGrid>
           )}

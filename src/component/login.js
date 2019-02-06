@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import AppBar from "material-ui/AppBar";
 import RaisedButton from "material-ui/RaisedButton";
 import TextField from "material-ui/TextField";
-
+import background from "./assets/food.jpg";
 export default class Login extends Component {
   constructor(props) {
     super(props);
@@ -13,8 +13,8 @@ export default class Login extends Component {
   }
 
   handleClick(e) {
-    if (this.state && this.state.username && this.state.password) {
-      if (e.target.innerText === "LOGIN AS ADMIN") {
+    if (e.target.innerText === "LOGIN AS ADMIN") {
+      if (this.state && this.state.username && this.state.password) {
         if (this.state.username === "admin") {
           if (this.state.password === "admin") {
             this.props.history.push({
@@ -27,69 +27,72 @@ export default class Login extends Component {
         } else {
           alert("Username does not match");
         }
-      } else if (e.target.innerText === "LOGIN AS GUEST") {
-        if (this.state.username === "guest") {
-          if (this.state.password === "guest") {
-            this.props.history.push({
-              pathname: "/food-grid",
-              state: { userDetail: "guest" }
-            });
-          } else {
-            alert("Password does not match");
-          }
-        } else {
-          alert("Username does not match");
-        }
       } else {
         alert("Username  and password does not match");
       }
+    } else if (e.target.innerText === "LOGIN AS GUEST") {
+      this.props.history.push({
+        pathname: "/food-grid",
+        state: { userDetail: "guest" }
+      });
     }
   }
+
   render() {
     return (
       <div
+        className="childRoot"
         style={{
-          marginTop: "9%",
-          marginLeft: "28%",
-          marginRight: "30%",
-          padding: "5%",
-          background: "whitesmoke"
+          backgroundImage: `url(${background})`,
+          height: "-webkit-fill-available",
+          marginTop: "-123px",
+          backgroundRepeat: "round"
         }}
       >
-        <AppBar title="Build a Food Recipe " />
-        <TextField
-          hintText="Enter your username"
-          floatingLabelText="Username"
-          onChange={(event, newvalue) => {
-            this.setState({ username: newvalue });
+        <div
+          style={{
+            marginTop: "9%",
+            marginLeft: "28%",
+            marginRight: "30%",
+            padding: "5%",
+            background: "whitesmoke"
           }}
-        />
-        <br />
-        <TextField
-          floatingLabelText="Password"
-          hintText="Please enter your Password"
-          type="password"
-          onChange={(event, newvalue) => {
-            this.setState({
-              password: newvalue
-            });
-          }}
-        />
-        <br />
-        <RaisedButton
-          label="Login as Admin"
-          value="admin"
-          onClick={this.handleClick.bind(this)}
-          primary
-          style={style}
-        />
-        <RaisedButton
-          label="Login as Guest"
-          value="guest"
-          onClick={this.handleClick.bind(this)}
-          primary
-          style={style}
-        />
+        >
+          <AppBar title="Build a Food Recipe " />
+          <TextField
+            hintText="Enter your username"
+            floatingLabelText="Username"
+            onChange={(event, newvalue) => {
+              this.setState({ username: newvalue });
+            }}
+          />
+          <br />
+          <TextField
+            floatingLabelText="Password"
+            hintText="Please enter your Password"
+            type="password"
+            onChange={(event, newvalue) => {
+              this.setState({
+                password: newvalue
+              });
+            }}
+          />
+          <br />
+          <RaisedButton
+            label="Login as Admin"
+            value="admin"
+            onClick={this.handleClick.bind(this)}
+            primary
+            style={style}
+          />
+          <RaisedButton
+            label="Login as Guest"
+            value="guest"
+            onClick={this.handleClick.bind(this)}
+            primary
+            style={style}
+          />
+        </div>
       </div>
     );
   }

@@ -9,12 +9,11 @@ import DataGrid, {
 import { Card, CardText } from "material-ui/Card";
 import $ from "jquery";
 import { RaisedButton } from "material-ui";
-import background from "./assets/grid-background.jpg";
 const apiKey = "49edad12be6386085bf6e30bcc25f715";
 const app_id = "5e084bfe";
 let userDetail = null;
 
-const cellRender = image => <img src={image.value} />;
+const cellRender = image => <img src={image.value} alt={image.name} />;
 
 const cellTemplate = (container, options) => {
   $("<a>" + options.value + "</a>")
@@ -48,7 +47,7 @@ class FoodGrid extends Component {
       this.props &&
       this.props.location &&
       this.props.location.state &&
-      this.props.location.state.userDetail == "admin"
+      this.props.location.state.userDetail === "admin"
     ) {
       let dataGrid = e.component;
       e.toolbarOptions.items.unshift({
@@ -141,7 +140,7 @@ class FoodGrid extends Component {
                   this.props &&
                   this.props.location &&
                   this.props.location.state &&
-                  this.props.location.state.userDetail == "admin"
+                  this.props.location.state.userDetail === "admin"
                     ? true
                     : false
                 }
@@ -150,7 +149,7 @@ class FoodGrid extends Component {
                   this.props &&
                   this.props.location &&
                   this.props.location.state &&
-                  this.props.location.state.userDetail == "admin"
+                  this.props.location.state.userDetail === "admin"
                     ? true
                     : false
                 }
